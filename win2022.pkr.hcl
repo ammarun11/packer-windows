@@ -24,12 +24,12 @@ variable "autounattend" {
 
 variable "cpus" {
   type    = string
-  default = "4"
+  default = "8"
 }
 
 variable "disk_size" {
   type    = string
-  default = "61440"
+  default = "16000"
 }
 
 variable "headless" {
@@ -49,7 +49,7 @@ variable "iso_url" {
 
 variable "memory_size" {
   type    = string
-  default = "4096"
+  default = "12288"
 }
 
 variable "shutdown_command" {
