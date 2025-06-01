@@ -30,8 +30,8 @@ REM Disable hibernation support
 REM Remove hibernation file
 powercfg /h off 
 
-REM Disable password expiration for vagrant user</Description>
-wmic useraccount where "name='vagrant'" set PasswordExpires=FALSE
+REM Disable password expiration for devops user</Description>
+wmic useraccount where "name='devops'" set PasswordExpires=FALSE
 
 REM Installs the code signing cert for RedHat
 REM which is needed to trust the driver installation for QEMU related hardware

@@ -19,17 +19,17 @@ variable "accelerator" {
 
 variable "autounattend" {
   type    = string
-  default = "./answer_files/11/Autounattend.xml"
+  default = "./answer_files/2022-standard/Autounattend.xml"
 }
 
 variable "cpus" {
   type    = string
-  default = "4"
+  default = "8"
 }
 
 variable "disk_size" {
   type    = string
-  default = "61440"
+  default = "16000"
 }
 
 variable "headless" {
@@ -39,17 +39,17 @@ variable "headless" {
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:c8dbc96b61d04c8b01faf6ce0794fdf33965c7b350eaa3eb1e6697019902945c"
+  default = "sha256:3e4fa6d8507b554856fc9ca6079cc402df11a8b79344871669f0251535255325"
 }
 
 variable "iso_url" {
   type    = string
-  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/22631.2428.231001-0608.23H2_NI_RELEASE_SVC_REFRESH_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  default = "https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso"
 }
 
 variable "memory_size" {
   type    = string
-  default = "4096"
+  default = "12288"
 }
 
 variable "shutdown_command" {
@@ -59,10 +59,10 @@ variable "shutdown_command" {
 
 variable "vm_name" {
   type    = string
-  default = "windows_11"
+  default = "windows_2022"
 }
 
-source "qemu" "win11_23h2" {
+source "qemu" "win2022" {
   accelerator      = "${var.accelerator}"
   boot_wait        = "20s"
   communicator     = "winrm"
@@ -80,16 +80,15 @@ source "qemu" "win11_23h2" {
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = "${var.shutdown_command}"
   winrm_insecure   = "true"
-  winrm_password   = "vagrant"
+  winrm_password   = "devops"
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
-  winrm_username   = "vagrant"
+  winrm_username   = "devops"
   output_directory = "output-${var.vm_name}"
 }
 
 build {
-  sources = ["source.qemu.win11_23h2"]
-
+  sources = ["source.qemu.win2022"]
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
     remote_path     = "c:/Windows/Temp/script.bat"

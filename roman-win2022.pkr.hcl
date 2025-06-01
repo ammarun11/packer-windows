@@ -4,7 +4,6 @@ packer {
       source  = "github.com/hashicorp/qemu"
       version = "~> 1"
     }
-
     windows-update = {
       version = "0.15.0"
       source  = "github.com/rgl/windows-update"
@@ -59,59 +58,87 @@ variable "shutdown_command" {
 
 variable "vm_name" {
   type    = string
-  default = "windows_2022"
+  default = "devops_2022"
 }
 
 source "qemu" "win2022" {
-  accelerator      = "${var.accelerator}"
+  accelerator      = var.accelerator
   boot_wait        = "20s"
   communicator     = "winrm"
-  cpus             = "${var.cpus}"
+  cpus             = var.cpus
   disk_compression = "true"
   disk_interface   = "virtio"
-  disk_size        = "${var.disk_size}"
-  floppy_files     = ["${var.autounattend}", "./scripts/0-firstlogin.bat", "./scripts/1-fixnetwork.ps1", "./scripts/70-install-misc.bat", "./scripts/50-enable-winrm.ps1", "./answer_files/Firstboot/Firstboot-Autounattend.xml", "./drivers/"]
+  disk_size        = var.disk_size
+  floppy_files     = [
+    var.autounattend,
+    "./scripts/0-firstlogin.bat",
+    "./scripts/1-fixnetwork.ps1",
+    "./scripts/50-enable-winrm.ps1",
+    "./answer_files/Firstboot/Firstboot-Autounattend.xml",
+    # Note: Do NOT include entire drivers folder here; instead mount it as a CD-ROM or copy if needed
+  ]
   format           = "qcow2"
-  headless         = "${var.headless}"
-  iso_checksum     = "${var.iso_checksum}"
-  iso_url          = "${var.iso_url}"
-  memory           = "${var.memory_size}"
+  headless         = var.headless
+  iso_checksum     = var.iso_checksum
+  iso_url          = var.iso_url
+  memory           = var.memory_size
   net_device       = "virtio-net"
   qemuargs         = [["-vga", "qxl"]]
-  shutdown_command = "${var.shutdown_command}"
+  shutdown_command = var.shutdown_command
   winrm_insecure   = "true"
-  winrm_password   = "vagrant"
+  winrm_password   = "ammardevops"    # Changed per your request
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
-  winrm_username   = "vagrant"
+  winrm_username   = "devops"         # Changed per your request
   output_directory = "output-${var.vm_name}"
 }
 
 build {
   sources = ["source.qemu.win2022"]
+
+  # Initial bootstrap scripts: network fix, winrm enable, etc.
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
     remote_path     = "c:/Windows/Temp/script.bat"
-    scripts         = ["./scripts/70-install-misc.bat", "./scripts/80-compile-dotnet-assemblies.bat"]
+    scripts = [
+      "./scripts/0-firstlogin.bat",
+      "./scripts/1-fixnetwork.ps1",
+      "./scripts/50-enable-winrm.ps1"
+    ]
   }
 
-  # Reboot after doing our first stages
-  # This is to give the windows-update provisioner a chance
-  # As it will seemingly hang on TiWorker.exe siting around idling
-  # (This is due to registry changes in the first stage seemignly not having
-  # efect until a reboot has happened)
+  # Reboot after initial setup
   provisioner "windows-restart" {
     restart_check_command = "powershell -command \"& {Write-Output 'restarted.'}\""
   }
 
-  provisioner "windows-update" {
+  # Run Windows Update to fully patch system
+  provisioner "windows-update" {}
+
+  # Install OpenSSH, Chocolatey, Visual Studio Build Tools, and tools (custom script)
+  provisioner "powershell" {
+    scripts = ["./scripts/install-openssh-choco-vs.ps1"]
   }
 
-  # Without this step, your images will be ~12-15GB
-  # With this step, roughly ~8-9GB
+  # Run Windows optimization script (disable services, cleanup)
+  provisioner "powershell" {
+    scripts = ["./scripts/windows-optimization.ps1"]
+  }
+
+  # Optional: Compile dotnet assemblies, other misc steps
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
     remote_path     = "c:/Windows/Temp/script.bat"
-    scripts         = ["./scripts/90-compact.bat"]
+    scripts = [
+      "./scripts/80-compile-dotnet-assemblies.bat",
+      "./scripts/70-install-misc.bat"
+    ]
+  }
+
+  # Compact the final image to reduce size
+  provisioner "windows-shell" {
+    execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
+    remote_path     = "c:/Windows/Temp/script.bat"
+    scripts = ["./scripts/90-compact.bat"]
   }
 }
