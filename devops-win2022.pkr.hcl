@@ -91,6 +91,9 @@ source "qemu" "win2022" {
   winrm_use_ssl    = "true"
   winrm_username   = "devops"         # Changed per your request
   output_directory = "output-${var.vm_name}"
+  vnc_bind_address = "127.0.0.1"
+  vnc_port_min     = 5991
+  vnc_port_max     = 5999
 }
 
 build {
