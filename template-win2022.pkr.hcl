@@ -80,10 +80,10 @@ source "qemu" "win2022" {
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = "${var.shutdown_command}"
   winrm_insecure   = "true"
-  winrm_password   = "devops"
+  winrm_password   = "vagrant"
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
-  winrm_username   = "devops"
+  winrm_username   = "vagrant"
   output_directory = "output-${var.vm_name}"
 }
 

@@ -43,8 +43,8 @@
       </DiskConfiguration>
       <UserData>
         <AcceptEula>true</AcceptEula>
-        <FullName>Devops Administrator</FullName>
-        <Organization>Devops Inc.</Organization>
+        <FullName>Vagrant Administrator</FullName>
+        <Organization>Vagrant Inc.</Organization>
         <ProductKey>
           <!-- If you *do* set a key, ensure it's for the right platform: -->
           <!-- otherwise you will get the dreaded "No images are available" -->
@@ -96,19 +96,19 @@
     <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
       <UserAccounts>
         <AdministratorPassword>
-          <Value>devops</Value>
+          <Value>vagrant</Value>
           <PlainText>true</PlainText>
         </AdministratorPassword>
         <LocalAccounts>
           <LocalAccount wcm:action="add">
             <Password>
-              <Value>devops</Value>
+              <Value>vagrant</Value>
               <PlainText>true</PlainText>
             </Password>
-            <Description>Devops User</Description>
-            <DisplayName>devops</DisplayName>
+            <Description>Vagrant User</Description>
+            <DisplayName>vagrant</DisplayName>
             <Group>administrators</Group>
-            <Name>devops</Name>
+            <Name>vagrant</Name>
           </LocalAccount>
         </LocalAccounts>
       </UserAccounts>
@@ -124,10 +124,10 @@
       </OOBE>
       <AutoLogon>
         <Password>
-          <Value>devops</Value>
+          <Value>vagrant</Value>
           <PlainText>true</PlainText>
         </Password>
-        <Username>devops</Username>
+        <Username>vagrant</Username>
         <Enabled>true</Enabled>
       </AutoLogon>
       <FirstLogonCommands>
@@ -162,7 +162,7 @@
         <HelpCustomized>false</HelpCustomized>
       </OEMInformation>
       <!-- Rename computer here. -->
-      <ComputerName>devops-2022</ComputerName>
+      <ComputerName>vagrant-2022</ComputerName>
       <TimeZone>AUS Eastern Standard Time</TimeZone>
       <RegisteredOwner/>
     </component>

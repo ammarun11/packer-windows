@@ -10,7 +10,7 @@ Images have the following:
 * Fully up to date (see `windows-update` provisioner)
 * Access mechanisms:
   * winrm, rdp, and ssh enabled by default
-  * username / password is "devops/devops"
+  * username / password is "vagrant/vagrant"
 * Installed packages
   * Chocolatey
   * QEMU guest additions

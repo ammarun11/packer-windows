@@ -5,5 +5,5 @@ See ../../README for more info
 
 Ultimately, we need two things:
 
-* Don't prompt to create a new user (we have devops)
+* Don't prompt to create a new user (we have vagrant)
 * Re-enable winrm

@@ -86,10 +86,10 @@ source "qemu" "win2022" {
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = var.shutdown_command
   winrm_insecure   = "true"
-  winrm_password   = "ammardevops"    # Changed per your request
+  winrm_password   = "vagrant"
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
-  winrm_username   = "devops"         # Changed per your request
+  winrm_username   = "vagrant"     
   output_directory = "output-${var.vm_name}"
   vnc_bind_address = "127.0.0.1"
   vnc_port_min     = 5991
