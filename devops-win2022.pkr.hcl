@@ -69,14 +69,7 @@ source "qemu" "win2022" {
   disk_compression = "true"
   disk_interface   = "virtio"
   disk_size        = var.disk_size
-  floppy_files     = [
-    var.autounattend,
-    "./scripts/0-firstlogin.bat",
-    "./scripts/1-fixnetwork.ps1",
-    "./scripts/50-enable-winrm.ps1",
-    "./answer_files/Firstboot/Firstboot-Autounattend.xml",
-    # Note: Do NOT include entire drivers folder here; instead mount it as a CD-ROM or copy if needed
-  ]
+  floppy_files     = ["${var.autounattend}", "./scripts/0-firstlogin.bat", "./scripts/1-fixnetwork.ps1", "./scripts/70-install-misc.bat", "./scripts/50-enable-winrm.ps1", "./answer_files/Firstboot/Firstboot-Autounattend.xml", "./drivers/"]
   format           = "qcow2"
   headless         = var.headless
   iso_checksum     = var.iso_checksum
@@ -86,10 +79,10 @@ source "qemu" "win2022" {
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = var.shutdown_command
   winrm_insecure   = "true"
-  winrm_password   = "vagrant"
+  winrm_password   = "ammardevops"
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
-  winrm_username   = "vagrant"     
+  winrm_username   = "devops"     
   output_directory = "output-${var.vm_name}"
   vnc_bind_address = "127.0.0.1"
   vnc_port_min     = 5991
