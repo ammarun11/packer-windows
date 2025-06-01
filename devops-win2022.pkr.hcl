@@ -79,7 +79,7 @@ source "qemu" "win2022" {
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = var.shutdown_command
   winrm_insecure   = "true"
-  winrm_password   = "ammardevops"
+  winrm_password   = "devops"
   winrm_timeout    = "30m"
   winrm_use_ssl    = "true"
   winrm_username   = "devops"     
