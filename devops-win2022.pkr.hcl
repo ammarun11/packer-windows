@@ -88,7 +88,7 @@ source "qemu" "win2022" {
   winrm_insecure   = true
   winrm_password   = "devops"
   winrm_timeout    = "60m"
-  winrm_use_ssl    = true
+  winrm_use_ssl    = false
   winrm_username   = "devops"
   output_directory = "output-${var.vm_name}"
   vnc_bind_address = "127.0.0.1"
