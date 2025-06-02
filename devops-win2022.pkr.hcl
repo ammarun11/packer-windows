@@ -72,30 +72,6 @@ source "qemu" "win2022" {
   disk_size        = var.disk_size
   floppy_files     = [
     "${var.autounattend}", 
-    "./scripts/0-firstlogin.bat", 
-    "./scripts/1-fixnetwork.ps1", 
-    "./scripts/50-enable-winrm.ps1", 
-    "./answer_files/Firstboot/Firstboot-Autounattend.xml", 
-    "./drivers/"
-  ]
-  format           = "qcow2"
-  headless         = var.headless
-  iso_checksum     = var.iso_checksum
-  iso_url          = var.iso_url
-  memory           = var.memory_size
-  net_device       = "virtio-net"
-  qemuargs         = [["-vga", "qxl"]]
-  shutdown_command = var.shutdown_command
-  winrm_insecure   = "true"
-  winrm_password   = "devops"
-  winrm_timeout    = "45m"
-  winrm_use_ssl    = "false"
-  winrm_username   = "devops"     
-  output_directory = "output-${var.vm_name}"
-  vnc_bind_address = "127.0.0.1"
-  vnc_port_min     = 5991
-  vnc_port_max     = 5999
-}
 
 build {
   sources = ["source.qemu.win2022"]
