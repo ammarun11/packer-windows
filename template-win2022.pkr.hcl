@@ -58,7 +58,7 @@ variable "shutdown_command" {
 
 variable "vm_name" {
   type    = string
-  default = "win_2022"
+  default = "win_2022.qcow2"
 }
 
 source "qemu" "win2022" {
@@ -115,7 +115,7 @@ build {
     restart_timeout = "20m"
   }
 
-  # Run Windows Update
+  # Run Windows Update *optional
   # provisioner "windows-update" {
   #   search_criteria = "IsInstalled=0"
   #   filters = [

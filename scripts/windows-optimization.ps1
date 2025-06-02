@@ -10,8 +10,8 @@ Set-Service -Name WSearch -StartupType Disabled -ErrorAction SilentlyContinue
 Write-Host "Clearing event logs..."
 wevtutil el | Foreach-Object {wevtutil cl "$_" 2>$null}
 
-# 3. Run Disk Cleanup (automated version)
-Write-Host "Running Disk Cleanup..."
-cleanmgr /sagerun:1
+# 3. Run Disk Cleanup (automated version) *optional
+# Write-Host "Running Disk Cleanup..."
+# cleanmgr /sagerun:1
 
 Write-Host "Windows optimization completed!"
