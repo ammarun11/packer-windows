@@ -72,6 +72,12 @@ source "qemu" "win2022" {
   disk_size        = var.disk_size
   floppy_files     = [
     "${var.autounattend}", 
+    "./scripts/0-firstlogin.bat", 
+    "./scripts/1-fixnetwork.ps1", 
+    "./scripts/50-enable-winrm.ps1", 
+    "./answer_files/Firstboot/Firstboot-Autounattend.xml", 
+    "./drivers/"
+  ]
 
 build {
   sources = ["source.qemu.win2022"]
