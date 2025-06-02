@@ -1,9 +1,17 @@
-# Disable unnecessary services
-Set-Service -Name DiagTrack -StartupType Disabled
-Set-Service -Name WSearch -StartupType Disabled
+# Windows Optimization - Simple version from notes
+Write-Host "Starting Windows optimization..."
 
-# Clear all event logs
-wevtutil el | Foreach-Object {wevtutil cl "$_"}
+# 1. Disable unnecessary services
+Write-Host "Disabling unnecessary services..."
+Set-Service -Name DiagTrack -StartupType Disabled -ErrorAction SilentlyContinue
+Set-Service -Name WSearch -StartupType Disabled -ErrorAction SilentlyContinue
 
-# Run Disk Cleanup silently (configure sagerun before or manually)
+# 2. Clear event logs
+Write-Host "Clearing event logs..."
+wevtutil el | Foreach-Object {wevtutil cl "$_" 2>$null}
+
+# 3. Run Disk Cleanup (automated version)
+Write-Host "Running Disk Cleanup..."
 cleanmgr /sagerun:1
+
+Write-Host "Windows optimization completed!"

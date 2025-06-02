@@ -13,9 +13,14 @@ REM Copy the enable-winrm script, relied on by our post-packer autounattend scri
 copy "A:/50-enable-winrm.ps1" "C:/Windows/Temp/enable-winrm.ps1"
 echo "Files copied" >> C:\Windows\Temp\firstboot.log
 
-REM Set PowerShell Execution Policy
-powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
-echo "PowerShell execution policy set" >> C:\Windows\Temp\firstboot.log
+REM Install chocolatey
+echo "Installing chocolatey..." >> C:\Windows\Temp\firstboot.log
+powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+echo "Chocolatey installation completed" >> C:\Windows\Temp\firstboot.log
+
+REM Refresh environment variables
+powershell -Command "[System.Environment]::SetEnvironmentVariable('Path', [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User'), 'Process')"
+echo "Environment variables refreshed" >> C:\Windows\Temp\firstboot.log
 
 REM Disable network location prompt
 reg add /f "HKLM\System\CurrentControlSet\Control\Network\NewNetworkWindowOff"
