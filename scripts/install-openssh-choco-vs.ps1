@@ -1,18 +1,39 @@
-# Install OpenSSH Server
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-Start-Service sshd
-Set-Service -Name sshd -StartupType Automatic
+# Install Chocolatey packages without specific versions
+Write-Host "Installing Chocolatey packages..."
 
-# Install Chocolatey
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+# Install packages without version constraints (use latest)
+$packages = @(
+    "git",
+    "curl",
+    "jq",
+    "wget",
+    "vim",
+    "7zip",
+    "putty",
+    "notepadplusplus"
+)
 
-# Install Visual Studio Build Tools 2022 (specific version)
-choco install visualstudio2022buildtools -y --version=117.8.0
+foreach ($package in $packages) {
+    try {
+        Write-Host "Installing $package..."
+        choco install $package -y --no-progress --limit-output
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "$package installed successfully"
+        } else {
+            Write-Warning "$package installation failed, but continuing..."
+        }
+    } catch {
+        Write-Warning "Error installing $package`: $($_.Exception.Message)"
+    }
+}
 
-# Install additional tools
-choco install -y git 7zip --version=23.1.0 wget --version=1.21.4 curl --version=8.4.0 jq --version=1.7.0 cmake --version=3.27.8
+# Install Visual Studio Build Tools (if needed)
+try {
+    Write-Host "Installing Visual Studio Build Tools..."
+    choco install visualstudio2022buildtools -y --no-progress --limit-output
+    Write-Host "Visual Studio Build Tools installed"
+} catch {
+    Write-Warning "Visual Studio Build Tools installation failed: $($_.Exception.Message)"
+}
 
-# Optional: Launch VS Installer UI to modify workloads
-Start-Process -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+Write-Host "Chocolatey package installation completed"
