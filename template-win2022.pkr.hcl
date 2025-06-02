@@ -58,7 +58,7 @@ variable "shutdown_command" {
 
 variable "vm_name" {
   type    = string
-  default = "win_2022.qcow2"
+  default = "win_2022"
 }
 
 source "qemu" "win2022" {
@@ -90,6 +90,7 @@ source "qemu" "win2022" {
   winrm_timeout    = "60m"
   winrm_use_ssl    = false
   winrm_username   = "devops"
+  vm_name          = "${var.vm_name}.qcow2"
   output_directory = "output-${var.vm_name}"
   vnc_bind_address = "127.0.0.1"
   vnc_port_min     = 5991
