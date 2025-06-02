@@ -3,8 +3,6 @@
   <servicing/>
   <settings pass="windowsPE">
     <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
-    <!-- Disable TPM checks for windows 11 !-->
-    <!-- This has no effect on other platforms, and is somewhat safe to include -->
       <RunSynchronous>
         <RunSynchronousCommand wcm:action="add">
           <Order>1</Order>
@@ -46,10 +44,6 @@
         <FullName>Devops Administrator</FullName>
         <Organization>Devops Inc.</Organization>
         <ProductKey>
-          <!-- If you *do* set a key, ensure it's for the right platform: -->
-          <!-- otherwise you will get the dreaded "No images are available" -->
-          <!-- which actually means "No images are available for this ProductKey! -->
-          <!-- <Key>SET_KEY_HERE</Key> -->
         </ProductKey>
       </UserData>
       <ImageInstall>
@@ -131,15 +125,12 @@
         <Enabled>true</Enabled>
       </AutoLogon>
       <FirstLogonCommands>
-        <!-- We want these to be as lightweight as possible here -->
-        <!-- as this ends up being a bit of a pain to maintain over revisions! -->
         <SynchronousCommand wcm:action="add">
           <CommandLine>cmd.exe /c a:\0-firstlogin.bat</CommandLine>
           <Order>1</Order>
           <Description>Bootstrap everything</Description>
           <RequiresUserInput>false</RequiresUserInput>
         </SynchronousCommand>
-        <!-- Set firewall zones so we can have powershell remoting enabled -->
         <SynchronousCommand wcm:action="add">
           <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\1-fixnetwork.ps1</CommandLine>
           <Description>Fix public network</Description>
@@ -147,7 +138,6 @@
           <RequiresUserInput>false</RequiresUserInput>
         </SynchronousCommand>
         <SynchronousCommand wcm:action="add">
-          <!-- Final step - turn on winrm and let packer do the rest -->
           <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\50-enable-winrm.ps1</CommandLine>
           <Order>100</Order>
           <Description>Enable windows remoting</Description>
@@ -162,7 +152,6 @@
       <OEMInformation>
         <HelpCustomized>false</HelpCustomized>
       </OEMInformation>
-      <!-- Rename computer here. -->
       <ComputerName>devops-2022</ComputerName>
       <TimeZone>AUS Eastern Standard Time</TimeZone>
       <RegisteredOwner/>

@@ -63,41 +63,59 @@ variable "vm_name" {
 
 source "qemu" "win2022" {
   accelerator      = var.accelerator
-  boot_wait        = "30s"
-  boot_command     = ["<enter>"]
+  boot_wait        = "60s"
   communicator     = "winrm"
   cpus             = var.cpus
-  disk_compression = "true"
+  disk_compression = true
   disk_interface   = "virtio"
   disk_size        = var.disk_size
   floppy_files     = [
-    "${var.autounattend}", 
-    "./scripts/0-firstlogin.bat", 
+    "${var.autounattend}",
+    "./scripts/0-firstlogin.bat",
     "./scripts/1-fixnetwork.ps1", 
-    "./scripts/50-enable-winrm.ps1", 
-    "./answer_files/Firstboot/Firstboot-Autounattend.xml", 
+    "./scripts/50-enable-winrm.ps1",
+    "./answer_files/Firstboot/Firstboot-Autounattend.xml",
     "./drivers/"
   ]
+  format           = "qcow2"
+  headless         = var.headless
+  iso_checksum     = var.iso_checksum
+  iso_url          = var.iso_url
+  memory           = var.memory_size
+  net_device       = "virtio-net"
+  qemuargs         = [["-vga", "qxl"]]
+  shutdown_command = var.shutdown_command
+  winrm_insecure   = true
+  winrm_password   = "devops"
+  winrm_timeout    = "60m"
+  winrm_use_ssl    = true
+  winrm_username   = "devops"
+  output_directory = "output-${var.vm_name}"
+  vnc_bind_address = "127.0.0.1"
+  vnc_port_min     = 5991
+  vnc_port_max     = 5999
+}
 
 build {
   sources = ["source.qemu.win2022"]
 
-  # Wait for WinRM to be available (first boot scripts run automatically via XML)
+  # Wait for WinRM to be available 
   provisioner "powershell" {
     inline = [
       "Write-Host 'WinRM is ready, first boot completed'",
-      "Get-Date"
+      "Get-Date",
+      "whoami"
     ]
-    timeout = "10m"
+    timeout = "15m"
   }
 
   # Reboot after initial setup
   provisioner "windows-restart" {
     restart_check_command = "powershell -command \"& {Write-Output 'restarted.'}\""
-    restart_timeout = "15m"
+    restart_timeout = "20m"
   }
 
-  # Run Windows Update to fully patch system
+  # Run Windows Update
   provisioner "windows-update" {
     search_criteria = "IsInstalled=0"
     filters = [
@@ -110,36 +128,36 @@ build {
   # Install additional software
   provisioner "powershell" {
     scripts = ["./scripts/install-openssh-choco-vs.ps1"]
-    timeout = "30m"
+    timeout = "45m"
   }
 
-  # Run Windows optimization script
+  # Run optimization script
   provisioner "powershell" {
     scripts = ["./scripts/windows-optimization.ps1"]
-    timeout = "15m"
+    timeout = "20m"
   }
 
   # Install misc tools
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
-    remote_path     = "c:/Windows/Temp/script.bat"
+    remote_path     = "C:/Windows/Temp/script.bat"
     scripts = ["./scripts/70-install-misc.bat"]
-    timeout = "15m"
+    timeout = "20m"
   }
 
   # Compile dotnet assemblies
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
-    remote_path     = "c:/Windows/Temp/script.bat"
+    remote_path     = "C:/Windows/Temp/script.bat"
     scripts = ["./scripts/80-compile-dotnet-assemblies.bat"]
-    timeout = "15m"
+    timeout = "20m"
   }
 
-  # Compact the final image
+  # Compact the image
   provisioner "windows-shell" {
     execute_command = "{{ .Vars }} cmd /c C:/Windows/Temp/script.bat"
-    remote_path     = "c:/Windows/Temp/script.bat"
+    remote_path     = "C:/Windows/Temp/script.bat"
     scripts = ["./scripts/90-compact.bat"]
-    timeout = "15m"
+    timeout = "30m"
   }
 }
