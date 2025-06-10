@@ -88,7 +88,7 @@ source "qemu" "win2022" {
   winrm_insecure   = true
   winrm_password   = "devops"
   winrm_timeout    = "60m"
-  winrm_use_ssl    = false
+  winrm_use_ssl    = true
   winrm_username   = "devops"
   vm_name          = "${var.vm_name}.qcow2"
   output_directory = "output-${var.vm_name}"
