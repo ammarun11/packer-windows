@@ -85,7 +85,7 @@ source "qemu" "win2022" {
   net_device       = "virtio-net"
   qemuargs         = [["-vga", "qxl"]]
   shutdown_command = var.shutdown_command
-  winrm_insecure   = true
+  winrm_insecure   = false
   winrm_password   = "devops"
   winrm_timeout    = "60m"
   winrm_use_ssl    = true
